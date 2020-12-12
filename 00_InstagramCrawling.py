@@ -9,6 +9,7 @@ import datetime
 import random
 import pymysql
 import argparse
+from cfg import setting_bigdata as setting
 
 # 해시태그, 아이디, 패쓰워드
 usr = ""
@@ -18,11 +19,11 @@ tag_name = ["먹스타그램", "맛스타그램", "맛집", "먹방", "먹스타
 
 class InstagramCrawling:
     def __init__(self, idx):
-        self.driver = wd.Chrome(executable_path="./chromedriver")
+        self.driver = wd.Chrome(executable_path="./cfg/chromedriver.exe")
         self.tag_idx = idx
         self.hashtag_db = 0
         self.cur = 0
-        self.count_non_post = 0;
+        self.count_non_post = 0
 
     def login_instagram(self, ):
         self.driver.get('https://www.instagram.com')
@@ -42,23 +43,21 @@ class InstagramCrawling:
         self.driver.find_element_by_xpath('//button[text()="Not Now"]').click()
 
         # 검색
-        self.driver.find_element_by_xpath('/html/body/div[1]/section/nav/div[2]/div/div/div[2]/input').send_keys("#"+tag_name[self.tag_idx])      # 검색창
-        self.driver.find_element_by_xpath('/html/body/div[1]/section/nav/div[2]/div/div/div[2]/div[4]/div/a[1]/div/div/div[1]/span').click() # 검색1번
+        self.driver.find_element_by_xpath('/html/body/div[1]/section/nav/div[2]/div/div/div[2]/input').send_keys("#" + tag_name[self.tag_idx])      # 검색창
+        self.driver.find_element_by_xpath('/html/body/div[1]/section/nav/div[2]/div/div/div[2]/div[4]/div/a[1]/div/div/div[1]/span').click()      # 검색1번
 
         # 게시글 클릭
         self.driver.implicitly_wait(3)
         self.driver.find_element_by_xpath('/html/body/div[1]/section/main/article/div[2]/div/div[1]/div[1]/a/div/div[2]').click()
 
-
     def login_db(self):
         # db 로그인
         self.hashtag_db = pymysql.connect(
-            user='',
-            passwd='',
-            host='nuda.iptime.org',
-            db='HASHTAG',
-            charset='utf8mb4'
-        )
+            user=setting.DB_CFG['user'],
+            passwd=setting.DB_CFG['passwd'],
+            host=setting.DB_CFG['host'],
+            db=setting.DB_CFG['db'],
+            charset=setting.DB_CFG['charset'])
         self.cur = self.hashtag_db.cursor(pymysql.cursors.DictCursor)
 
     def send_email(self, crawling_num):
