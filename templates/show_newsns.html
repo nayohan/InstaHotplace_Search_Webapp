@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <body>
+    <div max-width="100%">
+        <table class="table_wrap" border="1">
+            <th width=150px>검색</th>
+            <th width=150px>날짜</th>
+            <th width=300px>포스트</th>
+            <th width=300px>해시태그</th>
+            {% for row in rows %}
+            <tr>
+                <td>{{ row['location']}}</td>
+                <td>{{ row['date']}} </td>
+                <td>{{ row['post']}} </td>
+                <td>{{ row['hashtag']}} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>
